@@ -35,7 +35,7 @@ terminate_webcam_flag = False
 
 @app.route('/')
 def index():
-    return render_template('ODweb.html')
+    return render_template('index.html')
 
 
 @app.route('/uploads/<filename>')
