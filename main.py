@@ -9,7 +9,7 @@ import numpy as np
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
-model = YOLO('C:\\d10weights\\best.pt')
+model = YOLO('best.pt')
 
 # Designate Class names to a color (RGB decimal value)
 class_colors = {
