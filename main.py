@@ -45,20 +45,27 @@ def upload_file(filename):
 
 @app.route('/process_image', methods=['POST'])
 def process_image():
+    print("Processing image...")  # Debug statement
+
     source_type = request.form.get('source_type', 'file')  # Default to 'file'
-    
+    print(f"Source type: {source_type}")  # Debug statement
+
     if 'image' in request.files:
         image = request.files['image']
+        print(f"Received image: {image.filename}")  # Debug statement
+
         if not os.path.exists(app.config['UPLOAD_FOLDER']):
             os.makedirs(app.config['UPLOAD_FOLDER'])
         image_path = os.path.join(app.config['UPLOAD_FOLDER'], image.filename)
         image.save(image_path)
-        
+        print(f"Image saved to: {image_path}")  # Debug statement
+
         img = cv2.imread(image_path)
         if img is None:
             return jsonify({'error': 'Failed to load image'}), 500
         
         height, width, _ = img.shape  # Get image dimensions
+        print(f"Image dimensions: {height}x{width}")  # Debug statement
         results = model(img)
 
         if results is None:
@@ -102,8 +109,8 @@ def process_image():
                     font_thickness = max(2, min(3, int(font_scale)))  # Webcam adjustment
                 else:
                     border_thickness = max(5, min(10, int((x2 - x1) / 100)))  # File upload adjustment
-                    font_scale = max(7.0, min(2.0, (x2 - x1) / 100))  # File upload adjustment
-                    font_thickness = max(7, min(6, int(font_scale)))  # File upload adjustment
+                    font_scale = max(0.7, min(2.0, (x2 - x1) / 100))  # File upload adjustment
+                    font_thickness = max(1, min(3, int(font_scale)))  # File upload adjustment
 
                 print(f"Drawing box: {(x1, y1, x2, y2)} with color {color}, border_thickness {border_thickness}, font_scale {font_scale}, font_thickness {font_thickness}")
 
@@ -125,6 +132,10 @@ def process_image():
         return jsonify(response_data)
     
     return jsonify({'error': 'No image received'}), 400
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
 
 
 @app.route('/enable_webcam')
